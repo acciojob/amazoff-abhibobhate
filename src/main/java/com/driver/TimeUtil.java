@@ -1,6 +1,6 @@
 package com.driver;
 
-public class Time {
+public class TimeUtil {
     public static  int convertStringToInt(String deliveryTime) throws NumberFormatException {
         String ar[]=deliveryTime.split(":");
         int hh=Integer.parseInt(ar[0]);

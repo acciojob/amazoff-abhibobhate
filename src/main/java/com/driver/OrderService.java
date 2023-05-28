@@ -2,13 +2,11 @@ package com.driver;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 @Service
 public class OrderService {
-    OrderRepository orderRepository=new OrderRepository();
+    @Autowired
+    OrderRepository orderRepository;
 
 
     public void addOrder(Order order) {
@@ -26,18 +24,31 @@ public class OrderService {
     }
 
     public Order getOrderById(String orderId) {
-        return orderRepository.getOrderById(orderId);
+        Order order = orderRepository.getOrderById(orderId);
+        if(order == null){
+            throw new OrderIdDoesNotExists("Order Id Does Not Exists");
+        }
+        return order;
     }
 
     public DeliveryPartner getPartnerById(String partnerId) {
+        if(!orderRepository.checkPartnerId(partnerId)){
+            throw new PartnerIdDoesNotExists("Partner id does not Exists");
+        }
         return orderRepository.getPartnerById(partnerId);
     }
 
     public Integer getOrderCountByPartnerId(String partnerId) {
+        if(!orderRepository.checkPartnerId(partnerId)){
+            throw new PartnerIdDoesNotExists("Partner id does not Exists");
+        }
         return orderRepository.getOrderCountByPartnerId(partnerId);
     }
 
     public List<String> getOrdersByPartnerId(String partnerId) {
+        if(!orderRepository.checkPartnerId(partnerId)){
+            throw new PartnerIdDoesNotExists("Partner id does not Exists");
+        }
         return orderRepository.getOrdersByPartnerId(partnerId);
     }
 
@@ -50,19 +61,32 @@ public class OrderService {
     }
 
     public Integer getOrdersLeftAfterGivenTimeByPartnerId(String time, String partnerId) {
+        if(!orderRepository.checkPartnerId(partnerId)){
+            throw new PartnerIdDoesNotExists("Partner id does not Exists");
+        }
         return orderRepository.getOrdersLeftAfterGivenTimeByPartnerId(time,partnerId);
     }
 
     public String getLastDeliveryTimeByPartnerId(String partnerId) {
+        if(!orderRepository.checkPartnerId(partnerId)){
+            throw new PartnerIdDoesNotExists("Partner id does not Exists");
+        }
         return orderRepository.getLastDeliveryTimeByPartnerId(partnerId);
     }
 
     public void deletePartnerById(String partnerId) {
+        if(!orderRepository.checkPartnerId(partnerId)){
+            throw new PartnerIdDoesNotExists("Partner id does not Exists");
+        }
         orderRepository.deletePartnerById(partnerId);
     }
 
     public void deleteOrderById(String orderId) {
+        if(!orderRepository.checkOrderId(orderId)){
+            throw new OrderIdDoesNotExists("Order Id Does Not Exists");
+        }
         orderRepository.deleteOrderById(orderId);
+
     }
 
 
