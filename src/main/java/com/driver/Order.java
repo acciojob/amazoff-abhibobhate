@@ -6,6 +6,8 @@ public class Order {
     private int deliveryTime;
 
     public Order(String id, String deliveryTime) {
+        this.id = id;
+        this.deliveryTime = TimeUtil.convertToInt(deliveryTime);
 
         // The deliveryTime has to converted from string to int and then stored in the attribute
         //deliveryTime  = HH*60 + MM
@@ -16,4 +18,5 @@ public class Order {
     }
 
     public int getDeliveryTime() {return deliveryTime;}
+
 }
