@@ -3,60 +3,41 @@ package com.driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
 @Service
 public class OrderService {
-    @Autowired
-    OrderRepository orderRepository;
+    OrderRepository orderRepository=new OrderRepository();
+
+
     public void addOrder(Order order) {
         orderRepository.addOrder(order);
     }
+
 
     public void addPartner(String partnerId) {
         orderRepository.addPartner(partnerId);
     }
 
+
     public void addOrderPartnerPair(String orderId, String partnerId) {
-        if(!orderRepository.checkOrderId(orderId)){
-            throw new OrderIdDoesNotExists("Order Id Does Not Exists");
-            //return;
-        }
-        if(!orderRepository.checkPartnerId(partnerId)){
-            throw new PartnerIdDoesNotExists("PartnerIdDoesNotExists");
-            //return;
-        }
         orderRepository.addOrderPartnerPair(orderId,partnerId);
     }
 
     public Order getOrderById(String orderId) {
-        if(!orderRepository.checkOrderId(orderId)){
-            throw new OrderIdDoesNotExists("Order Id Does Not Exists");
-        }
         return orderRepository.getOrderById(orderId);
     }
 
     public DeliveryPartner getPartnerById(String partnerId) {
-        if(!orderRepository.checkPartnerId(partnerId)){
-            throw new PartnerIdDoesNotExists("PartnerIdDoesNotExists");
-            //return;
-        }
         return orderRepository.getPartnerById(partnerId);
     }
 
     public Integer getOrderCountByPartnerId(String partnerId) {
-        if(!orderRepository.checkPartnerId(partnerId)){
-            throw new PartnerIdDoesNotExists("PartnerIdDoesNotExists");
-            //return;
-        }
         return orderRepository.getOrderCountByPartnerId(partnerId);
     }
 
     public List<String> getOrdersByPartnerId(String partnerId) {
-        if(!orderRepository.checkPartnerId(partnerId)){
-            throw new PartnerIdDoesNotExists("PartnerIdDoesNotExists");
-            //return;
-        }
         return orderRepository.getOrdersByPartnerId(partnerId);
     }
 
@@ -65,53 +46,24 @@ public class OrderService {
     }
 
     public Integer getCountOfUnassignedOrders() {
-        return orderRepository.getAmazonOrder().size() - orderRepository.getOrderAssigned().size();
+        return orderRepository.getCountOfUnassignedOrders();
     }
 
     public Integer getOrdersLeftAfterGivenTimeByPartnerId(String time, String partnerId) {
-        List<String> orders = getOrdersByPartnerId(partnerId);
-        Integer t = TimeUtil.convertToInt(time);
-
-        int count = 0;
-        for(String s : orders){
-            String s1 = s+"0";
-            Integer t1 = getOrderById(s).getDeliveryTime();
-            if(t1 > t){
-                count++;
-            }
-        }
-        return count;
+        return orderRepository.getOrdersLeftAfterGivenTimeByPartnerId(time,partnerId);
     }
 
     public String getLastDeliveryTimeByPartnerId(String partnerId) {
-        List<String> orders = getOrdersByPartnerId(partnerId);
-        if(orders.size()==0)return "";
-        int maxTime = getOrderById(orders.get(0)).getDeliveryTime();
-        String max = orders.get(0);
-
-        for(String s : orders){
-            int currTime = getOrderById(s).getDeliveryTime();
-            if(currTime > maxTime){
-                maxTime = currTime;
-                max = s;
-            }
-        }
-        return max;
+        return orderRepository.getLastDeliveryTimeByPartnerId(partnerId);
     }
 
     public void deletePartnerById(String partnerId) {
-        if(!orderRepository.checkPartnerId(partnerId)){
-            throw new PartnerIdDoesNotExists("PartnerIdDoesNotExists");
-            //return;
-        }
-        orderRepository.unassignedAllOrdersOfPartner(partnerId);
-        orderRepository.deletePartnerId(partnerId);
+        orderRepository.deletePartnerById(partnerId);
     }
 
     public void deleteOrderById(String orderId) {
-        if(!orderRepository.checkOrderId(orderId)){
-            throw new OrderIdDoesNotExists("Order Id Does Not Exists");
-        }
-        orderRepository.deleteOrderAssined(orderId);
+        orderRepository.deleteOrderById(orderId);
     }
+
+
 }
